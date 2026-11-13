@@ -36,6 +36,10 @@ export const meta: WidgetMeta = {
 <p>Widget content.</p>
 ```
 
+`meta` may only use literal values and imports. It cannot refer to other
+variables defined in the same frontmatter; doing so fails the build with a
+`ReferenceError`.
+
 For a calculator, put the maths in a plain function in `src/lib/` with a test
 beside it, and import it from a `<script>` in the widget (see
 `src/widgets/Bmi.astro` and `src/lib/bmi.ts`). A failing test blocks the

@@ -18,6 +18,28 @@ describe('bmi', () => {
   });
 });
 
+describe('bmi plausibility', () => {
+  test('height typed in metres gives no result rather than a huge number', () => {
+    expect(bmi(70, 1.75)).toBeNull();
+  });
+  test.each([
+    [70, 49.9],
+    [70, 250.1],
+    [1.9, 170],
+    [400.1, 170],
+  ])('returns null outside adult ranges: %d kg, %d cm', (w, h) => {
+    expect(bmi(w, h)).toBeNull();
+  });
+  test.each([
+    [70, 50],
+    [70, 250],
+    [2, 170],
+    [400, 170],
+  ])('accepts the range limits: %d kg, %d cm', (w, h) => {
+    expect(bmi(w, h)).not.toBeNull();
+  });
+});
+
 describe('bmiCategory', () => {
   test.each([
     [18.4, 'Underweight'],

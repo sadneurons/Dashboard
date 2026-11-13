@@ -35,8 +35,14 @@ export const meta: WidgetMeta = {
 
     const update = () => {
       const result = bmi(weight.valueAsNumber, height.valueAsNumber);
+      const filled = height.value !== '' && weight.value !== '';
       value.textContent = result === null ? '' : result.toFixed(1);
-      band.textContent = result === null ? 'Enter height and weight' : bmiCategory(result);
+      band.textContent =
+        result !== null
+          ? bmiCategory(result)
+          : filled
+            ? 'Check the values: height in cm, weight in kg'
+            : 'Enter height and weight';
     };
 
     form.addEventListener('input', update);
@@ -72,7 +78,7 @@ export const meta: WidgetMeta = {
     padding: 0.4rem 0.55rem;
     font-size: 1rem;
     background: var(--page);
-    border: 1px solid var(--line);
+    border: 1px solid var(--edge);
     border-radius: var(--radius);
   }
 

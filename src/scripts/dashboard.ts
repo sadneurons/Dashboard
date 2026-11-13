@@ -29,6 +29,7 @@ let category = 'all';
 function apply(): void {
   const query = search?.value ?? '';
   let visible = 0;
+  let elsewhere = 0;
 
   for (const card of cards) {
     const inCategory = category === 'all' || card.dataset.category === category;
@@ -42,12 +43,20 @@ function apply(): void {
       group.hidden = !group.querySelector('[data-link]:not([hidden])');
     }
 
-    const show = inCategory && (cardMatches || matchingLinks.length > 0);
+    const found = cardMatches || matchingLinks.length > 0;
+    const show = inCategory && found;
     card.hidden = !show;
     if (show) visible += 1;
+    else if (found) elsewhere += 1;
   }
 
-  if (noMatches) noMatches.hidden = visible > 0;
+  if (noMatches) {
+    noMatches.hidden = visible > 0;
+    noMatches.textContent =
+      elsewhere === 0
+        ? 'Nothing matches. Clear the search or choose All.'
+        : `Nothing matches here, but there ${elsewhere === 1 ? 'is 1 match in another category' : `are ${elsewhere} matches in other categories`}. Choose All to see ${elsewhere === 1 ? 'it' : 'them'}.`;
+  }
 }
 
 function selectCategory(next: string): void {

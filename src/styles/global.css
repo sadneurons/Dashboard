@@ -5,6 +5,7 @@
   --ink: #15252c;
   --ink-soft: #4d626b;
   --line: #c3d0d5;
+  --edge: #7f949c; /* borders of controls: 3:1 against page and sheet */
   --accent: #0e5a64;
   --accent-ink: #ffffff;
   --mark: #f3d58a;
@@ -29,6 +30,7 @@
     --ink: #e2ecee;
     --ink-soft: #9db2b9;
     --line: #2d444c;
+    --edge: #5f7a83;
     --accent: #74c7d0;
     --accent-ink: #0e1b20;
     --mark: #6b5514;
@@ -48,6 +50,7 @@
   --ink: #e2ecee;
   --ink-soft: #9db2b9;
   --line: #2d444c;
+  --edge: #5f7a83;
   --accent: #74c7d0;
   --accent-ink: #0e1b20;
   --mark: #6b5514;
