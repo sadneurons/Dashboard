@@ -1,0 +1,75 @@
+---
+import { hueOf, slug } from '../lib/widgets';
+
+interface Props {
+  categories: string[];
+}
+
+const { categories } = Astro.props;
+---
+
+<nav class="rail" aria-label="Categories">
+  <button type="button" data-category-filter="all" aria-pressed="true">
+    <span class="swatch all"></span>All
+  </button>
+  {
+    categories.map((category) => (
+      <button type="button" data-category-filter={slug(category)} aria-pressed="false">
+        <span class="swatch" style={`background: var(--cat-${hueOf(category, categories, 6)})`} />
+        {category}
+      </button>
+    ))
+  }
+</nav>
+
+<style>
+  .rail {
+    display: flex;
+    gap: 0.35rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex: none;
+    padding: 0.5rem 0.8rem;
+    text-align: left;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+
+  button:hover {
+    border-color: var(--line);
+  }
+
+  button[aria-pressed='true'] {
+    background: var(--sheet);
+    border-color: var(--line);
+    font-weight: 650;
+  }
+
+  .swatch {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 2px;
+    flex: none;
+  }
+
+  .swatch.all {
+    background: var(--ink);
+  }
+
+  @media (min-width: 56rem) {
+    .rail {
+      flex-direction: column;
+      position: sticky;
+      top: 1.5rem;
+      overflow: visible;
+    }
+  }
+</style>

@@ -1,0 +1,59 @@
+---
+import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
+import Base from '../layouts/Base.astro';
+import CategoryNav from '../components/CategoryNav.astro';
+import SearchBox from '../components/SearchBox.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import WidgetCard from '../components/WidgetCard.astro';
+import { categoriesOf, hueOf, validateMeta } from '../lib/widgets';
+
+// Every file in src/widgets/ appears on the page; no registration needed.
+const modules = import.meta.glob<{ default: AstroComponentFactory; meta?: unknown }>(
+  '../widgets/*.astro',
+  { eager: true },
+);
+
+const widgets = Object.entries(modules)
+  .map(([path, module]) => ({
+    Widget: module.default,
+    meta: validateMeta(path.split('/').pop() ?? path, module.meta),
+  }))
+  .sort(
+    (a, b) =>
+      (a.meta.order ?? Infinity) - (b.meta.order ?? Infinity) ||
+      a.meta.title.localeCompare(b.meta.title),
+  );
+
+const categories = categoriesOf(widgets.map((widget) => widget.meta));
+---
+
+<Base>
+  <div class="frame">
+    <header class="masthead">
+      <h1>Dashboard</h1>
+      <ThemeToggle />
+      <SearchBox />
+    </header>
+    <div class="body">
+      <CategoryNav categories={categories} />
+      <main>
+        <div class="grid">
+          {
+            widgets.map(({ Widget, meta }) => (
+              <WidgetCard meta={meta} hue={hueOf(meta.category, categories, 6)}>
+                <Widget />
+              </WidgetCard>
+            ))
+          }
+        </div>
+        <p id="no-matches" class="no-matches" hidden>
+          Nothing matches. Clear the search or choose All.
+        </p>
+      </main>
+    </div>
+  </div>
+</Base>
+
+<script>
+  import '../scripts/dashboard';
+</script>

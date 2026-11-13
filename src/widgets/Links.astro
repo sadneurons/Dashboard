@@ -1,0 +1,64 @@
+---
+import type { WidgetMeta } from '../lib/widgets';
+import { parseLinks } from '../lib/links';
+import source from '../data/links.yaml?raw';
+
+export const meta: WidgetMeta = {
+  title: 'Links',
+  category: 'Links',
+  keywords: ['bookmarks', 'websites'],
+  order: 1,
+};
+
+const groups = parseLinks(source);
+---
+
+{
+  groups.map(({ group, links }) => (
+    <div class="group" data-link-group>
+      <h3>{group}</h3>
+      <ul>
+        {links.map(({ label, url }) => (
+          <li data-link data-search={`${label} ${group}`.toLowerCase()}>
+            <a href={url} target="_blank" rel="noopener noreferrer">
+              {label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))
+}
+
+<style>
+  .group + .group {
+    margin-top: 0.9rem;
+  }
+
+  h3 {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 0.3rem;
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  a {
+    display: block;
+    padding: 0.3rem 0.65rem;
+    color: var(--ink);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+
+  a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+</style>

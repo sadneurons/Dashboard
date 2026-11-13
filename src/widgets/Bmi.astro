@@ -1,0 +1,103 @@
+---
+import type { WidgetMeta } from '../lib/widgets';
+
+export const meta: WidgetMeta = {
+  title: 'BMI',
+  category: 'Calculators',
+  keywords: ['body mass index', 'weight', 'height', 'obesity'],
+  order: 2,
+};
+---
+
+<form class="bmi" data-bmi novalidate>
+  <label>
+    Height
+    <span class="field"><input name="height" type="number" inputmode="decimal" min="0" step="any" /> cm</span>
+  </label>
+  <label>
+    Weight
+    <span class="field"><input name="weight" type="number" inputmode="decimal" min="0" step="any" /> kg</span>
+  </label>
+  <output aria-live="polite">
+    <span class="value" data-bmi-value></span>
+    <span class="band" data-bmi-band>Enter height and weight</span>
+  </output>
+</form>
+
+<script>
+  import { bmi, bmiCategory } from '../lib/bmi';
+
+  for (const form of document.querySelectorAll<HTMLFormElement>('[data-bmi]')) {
+    const height = form.elements.namedItem('height') as HTMLInputElement;
+    const weight = form.elements.namedItem('weight') as HTMLInputElement;
+    const value = form.querySelector<HTMLElement>('[data-bmi-value]')!;
+    const band = form.querySelector<HTMLElement>('[data-bmi-band]')!;
+
+    const update = () => {
+      const result = bmi(weight.valueAsNumber, height.valueAsNumber);
+      value.textContent = result === null ? '' : result.toFixed(1);
+      band.textContent = result === null ? 'Enter height and weight' : bmiCategory(result);
+    };
+
+    form.addEventListener('input', update);
+    form.addEventListener('submit', (event) => event.preventDefault());
+    update();
+  }
+</script>
+
+<style>
+  .bmi {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  label {
+    display: grid;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+  }
+
+  .field {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    color: var(--ink);
+  }
+
+  input {
+    width: 100%;
+    min-width: 0;
+    padding: 0.4rem 0.55rem;
+    font-size: 1rem;
+    background: var(--page);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+
+  output {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    min-height: 2.6rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .value {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .value:empty {
+    display: none;
+  }
+
+  .band {
+    color: var(--ink-soft);
+  }
+</style>

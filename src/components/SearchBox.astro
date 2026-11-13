@@ -1,0 +1,64 @@
+<div class="search">
+  <label class="visually-hidden" for="search">Search the dashboard</label>
+  <input
+    id="search"
+    type="search"
+    placeholder="Search everything"
+    autocomplete="off"
+    spellcheck="false"
+  />
+  <kbd aria-hidden="true">/</kbd>
+</div>
+
+<style>
+  .search {
+    position: relative;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.85rem 3rem 0.85rem 1.1rem;
+    font-size: 1.25rem;
+    background: var(--sheet);
+    border: 2px solid var(--ink);
+    border-radius: var(--radius);
+  }
+
+  input::placeholder {
+    color: var(--ink-soft);
+    opacity: 1;
+  }
+
+  input:focus-visible {
+    outline-offset: 0;
+    border-color: var(--accent);
+  }
+
+  kbd {
+    position: absolute;
+    right: 0.9rem;
+    top: 50%;
+    translate: 0 -50%;
+    padding: 0.05rem 0.5rem;
+    font: inherit;
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    pointer-events: none;
+  }
+
+  input:focus ~ kbd,
+  input:not(:placeholder-shown) ~ kbd {
+    display: none;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+</style>

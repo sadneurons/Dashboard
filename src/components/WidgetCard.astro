@@ -1,0 +1,67 @@
+---
+import { slug, type WidgetMeta } from '../lib/widgets';
+
+interface Props {
+  meta: WidgetMeta;
+  /** Colour slot for this widget's category. */
+  hue: number;
+}
+
+const { meta, hue } = Astro.props;
+const category = slug(meta.category);
+const search = [meta.title, meta.category, ...meta.keywords].join(' ').toLowerCase();
+---
+
+<section
+  class:list={['card', { wide: meta.size === 'wide' }]}
+  data-widget
+  data-category={category}
+  data-search={search}
+  style={`--hue: var(--cat-${hue})`}
+>
+  <header>
+    <h2>{meta.title}</h2>
+    <p>{meta.category}</p>
+  </header>
+  <div class="content">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .card {
+    background: var(--sheet);
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--hue);
+    border-radius: var(--radius);
+    min-width: 0;
+  }
+
+  header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 1rem 0;
+  }
+
+  h2 {
+    font-size: 1.0625rem;
+    font-weight: 700;
+  }
+
+  header p {
+    font-size: 0.8125rem;
+    color: var(--ink-soft);
+  }
+
+  .content {
+    padding: 0.75rem 1rem 1rem;
+  }
+
+  @media (min-width: 40rem) {
+    .wide {
+      grid-column: span 2;
+    }
+  }
+</style>
