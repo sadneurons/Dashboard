@@ -170,3 +170,92 @@ input {
     align-items: start;
   }
 }
+
+/* Shared widget form pieces */
+
+.w-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.w-field {
+  display: grid;
+  gap: 0.25rem;
+  align-content: start;
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+}
+
+.w-field.full {
+  grid-column: 1 / -1;
+}
+
+.w-unit {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.w-input {
+  width: 100%;
+  min-width: 0;
+  padding: 0.4rem 0.55rem;
+  font-size: 1rem;
+  color: var(--ink);
+  background: var(--page);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+}
+
+.w-result {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.6rem;
+  min-height: 2.6rem;
+  margin-top: 0.75rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--line);
+}
+
+.w-value {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.w-value:empty {
+  display: none;
+}
+
+.w-band {
+  color: var(--ink-soft);
+}
+
+.w-note {
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--ink-soft);
+}
+
+.w-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  color: var(--ink);
+}
+
+.w-choices label {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  cursor: pointer;
+}
+
+.w-choices input {
+  accent-color: var(--accent);
+}

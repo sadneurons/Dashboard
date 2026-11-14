@@ -2,6 +2,7 @@ import { matches } from '../lib/search';
 
 const CATEGORY_KEY = 'dashboard:category';
 const THEME_KEY = 'dashboard:theme';
+const COLLAPSED_KEY = 'dashboard:collapsed';
 
 const read = (key: string): string | null => {
   try {
@@ -28,6 +29,8 @@ let category = 'all';
 
 function apply(): void {
   const query = search?.value ?? '';
+  // Collapsed cards open while searching, so a match is never hidden inside one.
+  document.documentElement.toggleAttribute('data-searching', query.trim() !== '');
   let visible = 0;
   let elsewhere = 0;
 
@@ -97,5 +100,32 @@ document.querySelector('#theme-toggle')?.addEventListener('click', () => {
   root.dataset.theme = next;
   write(THEME_KEY, next);
 });
+
+function readCollapsed(): string[] {
+  try {
+    const stored: unknown = JSON.parse(read(COLLAPSED_KEY) ?? '[]');
+    return Array.isArray(stored) ? stored.filter((id) => typeof id === 'string') : [];
+  } catch {
+    return [];
+  }
+}
+
+function setCollapsed(card: HTMLElement, collapsed: boolean): void {
+  card.toggleAttribute('data-collapsed', collapsed);
+  card.querySelector('[data-collapse]')?.setAttribute('aria-expanded', String(!collapsed));
+}
+
+const collapsed = new Set(readCollapsed());
+for (const card of cards) {
+  const id = card.dataset.widgetId ?? '';
+  setCollapsed(card, collapsed.has(id));
+  card.querySelector('[data-collapse]')?.addEventListener('click', () => {
+    const next = !card.hasAttribute('data-collapsed');
+    setCollapsed(card, next);
+    if (next) collapsed.add(id);
+    else collapsed.delete(id);
+    write(COLLAPSED_KEY, JSON.stringify([...collapsed]));
+  });
+}
 
 selectCategory(read(CATEGORY_KEY) ?? 'all');

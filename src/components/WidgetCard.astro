@@ -9,21 +9,27 @@ interface Props {
 
 const { meta, hue } = Astro.props;
 const category = slug(meta.category);
+const id = slug(meta.title);
 const search = [meta.title, meta.category, ...meta.keywords].join(' ').toLowerCase();
 ---
 
 <section
   class:list={['card', { wide: meta.size === 'wide' }]}
   data-widget
+  data-widget-id={id}
   data-category={category}
   data-search={search}
   style={`--hue: var(--cat-${hue})`}
 >
   <header>
-    <h2>{meta.title}</h2>
+    <h2>
+      <button type="button" data-collapse aria-expanded="true" aria-controls={`widget-${id}`}>
+        <span class="chevron" aria-hidden="true"></span>{meta.title}
+      </button>
+    </h2>
     <p>{meta.category}</p>
   </header>
-  <div class="content">
+  <div class="content" id={`widget-${id}`}>
     <slot />
   </div>
 </section>
@@ -48,6 +54,42 @@ const search = [meta.title, meta.category, ...meta.keywords].join(' ').toLowerCa
   h2 {
     font-size: 1.0625rem;
     font-weight: 700;
+  }
+
+  h2 button {
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    padding: 0;
+    font: inherit;
+    text-align: left;
+    background: none;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .chevron {
+    flex: none;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-right: 2px solid var(--ink-soft);
+    border-bottom: 2px solid var(--ink-soft);
+    rotate: 45deg;
+    translate: 0 -0.15rem;
+  }
+
+  /* Collapsed cards show only their header, except while a search is active. */
+  :global(html:not([data-searching])) .card[data-collapsed] .content {
+    display: none;
+  }
+
+  :global(html:not([data-searching])) .card[data-collapsed] header {
+    padding-bottom: 0.8rem;
+  }
+
+  :global(html:not([data-searching])) .card[data-collapsed] .chevron {
+    rotate: -45deg;
+    translate: 0;
   }
 
   header p {

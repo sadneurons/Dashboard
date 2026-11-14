@@ -1,0 +1,91 @@
+---
+import type { WidgetMeta } from '../lib/widgets';
+
+export const meta: WidgetMeta = {
+  title: 'Date helper',
+  category: 'Utilities',
+  keywords: ['age', 'date of birth', 'dob', 'follow-up', 'weeks', 'months', 'calendar'],
+};
+---
+
+<form data-date-helper novalidate>
+  <div class="w-fields">
+    <label class="w-field full">
+      Date of birth
+      <input class="w-input" name="dob" type="date" />
+    </label>
+  </div>
+  <output class="w-result" aria-live="polite">
+    <span class="w-value" data-age-value></span>
+    <span class="w-band" data-age-band>Enter a date of birth for age today</span>
+  </output>
+
+  <div class="w-fields second">
+    <label class="w-field full">
+      Starting from
+      <input class="w-input" name="from" type="date" />
+    </label>
+    <label class="w-field">
+      Add
+      <input class="w-input" name="amount" type="number" inputmode="numeric" step="1" value="6" />
+    </label>
+    <label class="w-field">
+      Unit
+      <select class="w-input" name="unit">
+        <option value="days">days</option>
+        <option value="weeks" selected>weeks</option>
+        <option value="months">months</option>
+      </select>
+    </label>
+  </div>
+  <output class="w-result" aria-live="polite">
+    <span class="date" data-date-result></span>
+  </output>
+</form>
+
+<script>
+  import { addToDate, ageOn, formatDate, todayIso, type DateUnit } from '../lib/dates';
+
+  for (const form of document.querySelectorAll<HTMLFormElement>('[data-date-helper]')) {
+    const field = (name: string) => form.elements.namedItem(name) as HTMLInputElement;
+    const ageValue = form.querySelector<HTMLElement>('[data-age-value]')!;
+    const ageBand = form.querySelector<HTMLElement>('[data-age-band]')!;
+    const result = form.querySelector<HTMLElement>('[data-date-result]')!;
+
+    field('from').value = todayIso();
+
+    const update = () => {
+      const dob = field('dob').value;
+      const age = ageOn(dob, todayIso());
+      ageValue.textContent = age === null ? '' : String(age);
+      ageBand.textContent =
+        age !== null
+          ? 'years old today'
+          : dob === ''
+            ? 'Enter a date of birth for age today'
+            : 'Check the date of birth';
+
+      const target = addToDate(
+        field('from').value,
+        field('amount').valueAsNumber,
+        field('unit').value as DateUnit,
+      );
+      result.textContent = target ? formatDate(target) : 'Enter a start date and a whole number';
+    };
+
+    form.addEventListener('input', update);
+    form.addEventListener('submit', (event) => event.preventDefault());
+    update();
+  }
+</script>
+
+<style>
+  .second {
+    margin-top: 1rem;
+  }
+
+  .date {
+    font-size: 1.125rem;
+    font-weight: 700;
+  }
+</style>

@@ -1,0 +1,95 @@
+---
+import type { WidgetMeta } from '../lib/widgets';
+
+export const meta: WidgetMeta = {
+  title: 'Creatinine clearance',
+  category: 'Calculators',
+  keywords: ['cockcroft-gault', 'crcl', 'renal function', 'kidney', 'egfr', 'dosing'],
+};
+---
+
+<form data-crcl novalidate>
+  <div class="w-fields">
+    <label class="w-field">
+      Age
+      <span class="w-unit"><input class="w-input" name="age" type="number" inputmode="numeric" min="0" step="1" /> years</span>
+    </label>
+    <label class="w-field">
+      Weight
+      <span class="w-unit"><input class="w-input" name="weight" type="number" inputmode="decimal" min="0" step="any" /> kg</span>
+    </label>
+    <label class="w-field">
+      Serum creatinine
+      <span class="w-unit"><input class="w-input" name="creatinine" type="number" inputmode="decimal" min="0" step="any" /> µmol/L</span>
+    </label>
+    <fieldset class="w-field">
+      <legend>Sex</legend>
+      <span class="w-choices">
+        <label><input type="radio" name="sex" value="female" /> Female</label>
+        <label><input type="radio" name="sex" value="male" /> Male</label>
+      </span>
+    </fieldset>
+  </div>
+  <output class="w-result" aria-live="polite">
+    <span class="w-value" data-crcl-value></span>
+    <span class="w-band" data-crcl-band>Enter all four values</span>
+  </output>
+  <p class="w-note">
+    Cockcroft-Gault: (140 − age) × weight × 1.23 (men) or 1.04 (women) ÷ creatinine. Uses the weight
+    you enter; which weight to use (actual, ideal or adjusted) depends on the drug and local
+    guidance. Not the same as eGFR.
+  </p>
+</form>
+
+<script>
+  import { creatinineClearance, type Sex } from '../lib/crcl';
+
+  for (const form of document.querySelectorAll<HTMLFormElement>('[data-crcl]')) {
+    const field = (name: string) => form.elements.namedItem(name) as HTMLInputElement;
+    const value = form.querySelector<HTMLElement>('[data-crcl-value]')!;
+    const band = form.querySelector<HTMLElement>('[data-crcl-band]')!;
+
+    const update = () => {
+      const sex = new FormData(form).get('sex') as Sex | null;
+      const filled =
+        sex !== null && ['age', 'weight', 'creatinine'].every((name) => field(name).value !== '');
+      const result = sex
+        ? creatinineClearance({
+            age: field('age').valueAsNumber,
+            weightKg: field('weight').valueAsNumber,
+            creatinineUmol: field('creatinine').valueAsNumber,
+            sex,
+          })
+        : null;
+      value.textContent = result === null ? '' : String(result);
+      band.textContent =
+        result !== null
+          ? 'mL/min'
+          : filled
+            ? 'Check the values: age 18 to 120, weight in kg, creatinine in µmol/L'
+            : 'Enter all four values';
+    };
+
+    form.addEventListener('input', update);
+    form.addEventListener('submit', (event) => event.preventDefault());
+    update();
+  }
+</script>
+
+<style>
+  fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+
+  legend {
+    padding: 0;
+    margin-bottom: 0.25rem;
+  }
+
+  .w-choices {
+    padding: 0.4rem 0;
+  }
+</style>

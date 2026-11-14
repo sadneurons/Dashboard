@@ -1,0 +1,123 @@
+---
+import type { WidgetMeta } from '../lib/widgets';
+import { FOUR_AT_ITEMS } from '../lib/fourAt';
+
+export const meta: WidgetMeta = {
+  title: '4AT delirium screen',
+  category: 'Calculators',
+  keywords: ['4at', 'delirium', 'confusion', 'amt4', 'acute confusional state', 'score'],
+};
+---
+
+<form data-four-at novalidate>
+  {
+    FOUR_AT_ITEMS.map((item, index) => (
+      <fieldset>
+        <legend>
+          {index + 1}. {item.title}
+        </legend>
+        <p class="hint">{item.hint}</p>
+        {item.options.map((option, optionIndex) => (
+          <label>
+            <input type="radio" name={item.id} value={optionIndex} data-points={option.points} />
+            <span>{option.label}</span>
+            <span class="points">{option.points}</span>
+          </label>
+        ))}
+      </fieldset>
+    ))
+  }
+  <output class="w-result" aria-live="polite">
+    <span class="w-value" data-four-at-value></span>
+    <span class="w-band" data-four-at-band>Answer all four items</span>
+  </output>
+  <div class="actions">
+    <button type="reset">Clear</button>
+  </div>
+  <p class="w-note">
+    A score of 4 or more suggests delirium but is not diagnostic. Item wording is abbreviated; see{' '}
+    <a href="https://www.the4at.com/" target="_blank" rel="noopener noreferrer">the4at.com</a> for
+    the full test and guidance.
+  </p>
+</form>
+
+<script>
+  import { FOUR_AT_ITEMS, fourAtInterpretation, fourAtScore } from '../lib/fourAt';
+
+  for (const form of document.querySelectorAll<HTMLFormElement>('[data-four-at]')) {
+    const value = form.querySelector<HTMLElement>('[data-four-at-value]')!;
+    const band = form.querySelector<HTMLElement>('[data-four-at-band]')!;
+
+    const update = () => {
+      const answers = FOUR_AT_ITEMS.map((item) => {
+        const checked = form.querySelector<HTMLInputElement>(`input[name="${item.id}"]:checked`);
+        return checked ? Number(checked.dataset.points) : null;
+      });
+      const score = fourAtScore(answers);
+      value.textContent = score === null ? '' : String(score);
+      band.textContent = score === null ? 'Answer all four items' : fourAtInterpretation(score);
+    };
+
+    form.addEventListener('input', update);
+    // Reset clears the radios after this event, so read them on the next tick.
+    form.addEventListener('reset', () => setTimeout(update));
+    form.addEventListener('submit', (event) => event.preventDefault());
+    update();
+  }
+</script>
+
+<style>
+  fieldset {
+    margin: 0 0 0.75rem;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+
+  legend {
+    padding: 0;
+    font-weight: 600;
+  }
+
+  .hint {
+    margin: 0.1rem 0 0.3rem;
+    font-size: 0.8125rem;
+    color: var(--ink-soft);
+  }
+
+  label {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.5rem;
+    align-items: baseline;
+    padding: 0.2rem 0.3rem;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  label:hover {
+    background: var(--page);
+  }
+
+  input {
+    accent-color: var(--accent);
+  }
+
+  .points {
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .actions {
+    margin-top: 0.5rem;
+  }
+
+  button {
+    padding: 0.2rem 0.65rem;
+    font-size: 0.875rem;
+    background: none;
+    border: 1px solid var(--edge);
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+</style>
