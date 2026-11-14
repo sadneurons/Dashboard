@@ -15,11 +15,11 @@ const groups = parseLinks(source);
 
 {
   groups.map(({ group, links }) => (
-    <div class="group" data-link-group>
+    <div class="group" data-item-group>
       <h3>{group}</h3>
       <ul>
         {links.map(({ label, url }) => (
-          <li data-link data-search={`${label} ${group}`.toLowerCase()}>
+          <li data-item data-search={`${label} ${group}`.toLowerCase()}>
             <a href={url} target="_blank" rel="noopener noreferrer">
               {label}
             </a>

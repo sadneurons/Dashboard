@@ -1,0 +1,226 @@
+# Codes for neurodegenerative conditions, shown in the "Neurodegenerative
+# disease codes" widget.
+#
+# Sources, checked November 2026:
+#   SNOMED CT  International Edition (concept ids are the same in the UK Edition)
+#   ICD-10     WHO version 2019
+#   ICD-11     WHO ICD-11 MMS
+#
+# Each condition needs a name and a snomed id. icd10, icd11, also (other
+# names for search) and note are optional. The build fails on a SNOMED id
+# with a wrong check digit or a malformed ICD code.
+#
+# Keep every code in quotes: YAML reads an unquoted 8E00 as the number 8.
+
+- group: Dementia and cognitive disorders
+  conditions:
+    - name: Dementia, unspecified
+      snomed: "52448006"
+      icd10: ["F03"]
+      icd11: ["6D8Z"]
+    - name: Mild cognitive impairment
+      also: [MCI, mild neurocognitive disorder, mild cognitive disorder]
+      snomed: "386805003"
+      icd10: ["F06.7"]
+      icd11: ["6D71"]
+    - name: Alzheimer's disease
+      also: [AD, Alzheimer disease]
+      snomed: "26929004"
+      icd10: ["G30.9"]
+      icd11: ["8A20"]
+      note: >-
+        ICD-10 by onset: G30.0 early, G30.1 late. Dementia in Alzheimer's
+        is F00.0 early, F00.1 late, F00.9 unspecified, each paired with the
+        G30 code. ICD-11 dementia due to Alzheimer disease is 6D80.
+    - name: Mixed dementia
+      also: [mixed Alzheimer's and vascular dementia]
+      snomed: "79341000119107"
+      icd10: ["F00.2", "G30.8"]
+      icd11: ["6D80.2"]
+      note: "ICD-11 6D80.2 is Alzheimer disease dementia, mixed type, with cerebrovascular disease."
+    - name: Vascular dementia
+      also: [VaD]
+      snomed: "429998004"
+      icd10: ["F01.9"]
+      icd11: ["6D81"]
+      note: "Subcortical vascular dementia is SNOMED 230286002, ICD-10 F01.2."
+    - name: Dementia with Lewy bodies
+      also: [DLB, Lewy body dementia, LBD]
+      snomed: "312991009"
+      icd10: ["G31.8", "F02.8"]
+      icd11: ["6D82", "8A22"]
+      note: >-
+        Lewy body disease itself is SNOMED 80098002, ICD-11 8A22; 6D82 is
+        the dementia. Newer SNOMED releases add 1363185006 Dementia due to
+        Lewy body disease and reword 312991009 as late onset.
+    - name: Frontotemporal dementia
+      also: [FTD, Pick's disease, frontotemporal lobar degeneration, FTLD]
+      snomed: "230270009"
+      icd10: ["G31.0", "F02.0"]
+      icd11: ["6D83", "8A23"]
+      note: "ICD-11 6D83 is the dementia; 8A23 is frontotemporal lobar degeneration."
+    - name: Behavioural variant frontotemporal dementia
+      also: [bvFTD]
+      snomed: "716994006"
+      icd10: ["G31.0"]
+      icd11: ["6D83"]
+    - name: Semantic dementia
+      also: [semantic variant primary progressive aphasia, svPPA, PPA]
+      snomed: "230288001"
+      icd10: ["G31.0"]
+      icd11: ["8A23"]
+      note: "ICD-11 has no specific code; 8A23 is the parent, frontotemporal lobar degeneration."
+    - name: Progressive non-fluent aphasia
+      also: [PNFA, non-fluent variant primary progressive aphasia, nfvPPA, PPA]
+      snomed: "716281000"
+      icd10: ["G31.0"]
+      icd11: ["8A23"]
+      note: "ICD-11 has no specific code; 8A23 is the parent, frontotemporal lobar degeneration."
+    - name: Logopenic progressive aphasia
+      also: [logopenic variant primary progressive aphasia, lvPPA, PPA]
+      snomed: "716380002"
+      icd10: ["G31.0"]
+      note: "No specific ICD-11 code. Usually Alzheimer pathology, so G30.8 or 8A20 may fit better."
+    - name: Posterior cortical atrophy
+      also: [PCA, Benson's syndrome]
+      snomed: "715574002"
+      icd10: ["G31.0"]
+      icd11: ["8A21.0"]
+      note: "Where Alzheimer pathology is established, ICD-10 G30.8 may fit better."
+    - name: Frontotemporal dementia with motor neurone disease
+      also: [FTD-MND, FTD-ALS]
+      snomed: "230274000"
+      icd10: ["G31.0", "G12.2"]
+
+- group: Parkinsonian and movement disorders
+  conditions:
+    - name: Parkinson's disease
+      also: [PD, Parkinson disease]
+      snomed: "49049000"
+      icd10: ["G20"]
+      icd11: ["8A00.0"]
+    - name: Parkinson's disease dementia
+      also: [PDD]
+      snomed: "425390006"
+      icd10: ["F02.3", "G20"]
+      icd11: ["6D85.0"]
+    - name: Multiple system atrophy
+      also: [MSA, Shy-Drager syndrome]
+      snomed: "230297002"
+      icd10: ["G23.2", "G23.3"]
+      icd11: ["8D87.0"]
+      note: "Older ICD-10 versions used G90.3; check which your coding system expects."
+    - name: Multiple system atrophy, parkinsonian type
+      also: [MSA-P]
+      snomed: "444197004"
+      icd10: ["G23.2"]
+      icd11: ["8D87.01"]
+    - name: Multiple system atrophy, cerebellar type
+      also: [MSA-C]
+      snomed: "444024002"
+      icd10: ["G23.3"]
+      icd11: ["8D87.00"]
+    - name: Progressive supranuclear palsy
+      also: [PSP, Steele-Richardson-Olszewski syndrome]
+      snomed: "192976002"
+      icd10: ["G23.1"]
+      icd11: ["8A00.10"]
+    - name: Corticobasal degeneration
+      also: [CBD, corticobasal syndrome, CBS]
+      snomed: "18842008"
+      icd10: ["G31.8"]
+      icd11: ["8A00.1Y"]
+      note: "ICD-11 has no specific code; 8A00.1Y is other specified atypical parkinsonism."
+    - name: Huntington's disease
+      also: [HD, Huntington's chorea, Huntington disease]
+      snomed: "58756001"
+      icd10: ["G10"]
+      icd11: ["8A01.10"]
+      note: "Dementia in Huntington's is ICD-10 F02.2, ICD-11 6D85.1."
+
+- group: Motor neurone disorders
+  conditions:
+    - name: Motor neurone disease
+      also: [MND, motor neuron disease]
+      snomed: "37340000"
+      icd10: ["G12.2"]
+      icd11: ["8B60"]
+    - name: Amyotrophic lateral sclerosis
+      also: [ALS]
+      snomed: "86044005"
+      icd10: ["G12.2"]
+      icd11: ["8B60.0"]
+    - name: Primary lateral sclerosis
+      also: [PLS]
+      snomed: "81211007"
+      icd10: ["G12.2"]
+      icd11: ["8B60.4"]
+    - name: Progressive muscular atrophy
+      also: [PMA]
+      snomed: "88923002"
+      icd10: ["G12.2"]
+      icd11: ["8B60.3"]
+    - name: Progressive bulbar palsy
+      also: [PBP]
+      snomed: "54304004"
+      icd10: ["G12.2"]
+      icd11: ["8B60.1"]
+    - name: Spinal muscular atrophy
+      also: [SMA]
+      snomed: "5262007"
+      icd10: ["G12.9"]
+      icd11: ["8B61"]
+      note: "ICD-10 by type: G12.0 infantile type I, G12.1 other inherited."
+    - name: Spinal and bulbar muscular atrophy
+      also: [Kennedy's disease, SBMA, bulbospinal neuronopathy]
+      snomed: "230253001"
+      icd10: ["G12.1"]
+
+- group: Prion diseases
+  conditions:
+    - name: Prion disease, unspecified
+      snomed: "20484008"
+      icd10: ["A81.9"]
+      icd11: ["8E0Z"]
+    - name: Creutzfeldt-Jakob disease
+      also: [CJD]
+      snomed: "792004"
+      icd10: ["A81.0"]
+      icd11: ["8E00"]
+      note: >-
+        ICD-11 has no code for CJD of unspecified type; 8E00 is sporadic.
+        Dementia in CJD is ICD-10 F02.1, ICD-11 6D85.5.
+    - name: Sporadic Creutzfeldt-Jakob disease
+      also: [sCJD]
+      snomed: "713060000"
+      icd10: ["A81.0"]
+      icd11: ["8E00"]
+    - name: Variant Creutzfeldt-Jakob disease
+      also: [vCJD]
+      snomed: "304603007"
+      icd10: ["A81.0"]
+      icd11: ["8E01.2"]
+
+- group: Ataxias and other inherited conditions
+  conditions:
+    - name: Friedreich's ataxia
+      also: [FRDA, Friedreich ataxia]
+      snomed: "10394003"
+      icd10: ["G11.1"]
+      icd11: ["8A03.10"]
+    - name: Spinocerebellar ataxia
+      also: [SCA]
+      snomed: "129609000"
+      icd10: ["G11.2"]
+      icd11: ["8A03.16"]
+      note: "ICD-10 G11.2 is late-onset cerebellar ataxia; early-onset forms are G11.1."
+    - name: Hereditary spastic paraplegia
+      also: [HSP, Strümpell disease]
+      snomed: "39912006"
+      icd10: ["G11.4"]
+      icd11: ["8B44.0"]
+    - name: CADASIL
+      also: [cerebral autosomal dominant arteriopathy with subcortical infarcts and leukoencephalopathy]
+      snomed: "390936003"
+      icd10: ["I67.8"]
+      icd11: ["8B22.C0"]

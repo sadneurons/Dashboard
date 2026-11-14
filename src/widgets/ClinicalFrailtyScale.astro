@@ -1,0 +1,162 @@
+---
+import type { WidgetMeta } from '../lib/widgets';
+import { CFS_LEVELS } from '../lib/cfs';
+
+export const meta: WidgetMeta = {
+  title: 'Clinical Frailty Scale',
+  category: 'Calculators',
+  keywords: ['rockwood', 'cfs', 'frailty', 'geriatric', 'older people', 'score'],
+  order: 3,
+};
+---
+
+<div data-cfs>
+  <ol>
+    {
+      CFS_LEVELS.map((level) => (
+        <li data-item data-search={`${level.score} ${level.name} ${level.description}`.toLowerCase()}>
+          <button type="button" data-cfs-score={level.score} aria-pressed="false">
+            <span class="score">{level.score}</span>
+            <span>
+              <strong>{level.name}</strong>
+              <span class="description">{level.description}</span>
+            </span>
+          </button>
+        </li>
+      ))
+    }
+  </ol>
+  <div class="result">
+    <output aria-live="polite" data-cfs-output>Select a level</output>
+    <button type="button" class="copy" data-cfs-copy hidden>Copy</button>
+  </div>
+  <p class="notes">
+    Score the person's baseline two weeks ago, not how they are when acutely unwell. Validated in
+    people aged 65 and over; not for stable long-term disability. In dementia, frailty usually
+    tracks its severity: mild 5, moderate 6, severe 7. Descriptions here are paraphrased; see the
+    <a
+      href="https://www.dal.ca/sites/gmr/our-tools/clinical-frailty-scale.html"
+      target="_blank"
+      rel="noopener noreferrer">official scale</a
+    >.
+  </p>
+</div>
+
+<script>
+  import { cfsSummary } from '../lib/cfs';
+
+  for (const widget of document.querySelectorAll<HTMLElement>('[data-cfs]')) {
+    const buttons = [...widget.querySelectorAll<HTMLButtonElement>('[data-cfs-score]')];
+    const output = widget.querySelector<HTMLElement>('[data-cfs-output]')!;
+    const copy = widget.querySelector<HTMLButtonElement>('[data-cfs-copy]')!;
+
+    for (const button of buttons) {
+      button.addEventListener('click', () => {
+        // Selecting the chosen level again clears it.
+        const selected = button.getAttribute('aria-pressed') === 'true' ? null : button;
+        for (const other of buttons) other.setAttribute('aria-pressed', String(other === selected));
+        const summary = selected ? cfsSummary(Number(selected.dataset.cfsScore)) : null;
+        output.textContent = summary ?? 'Select a level';
+        copy.hidden = summary === null;
+        copy.textContent = 'Copy';
+      });
+    }
+
+    copy.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(output.textContent ?? '');
+        copy.textContent = 'Copied';
+      } catch {
+        // Clipboard access can be refused; select the text so Ctrl+C still works.
+        const range = document.createRange();
+        range.selectNodeContents(output);
+        getSelection()?.removeAllRanges();
+        getSelection()?.addRange(range);
+        copy.textContent = 'Press Ctrl+C';
+      }
+    });
+  }
+</script>
+
+<style>
+  ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  li button {
+    display: grid;
+    grid-template-columns: 1.6rem 1fr;
+    gap: 0.6rem;
+    align-items: start;
+    width: 100%;
+    padding: 0.35rem 0.5rem;
+    text-align: left;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+
+  li button:hover {
+    border-color: var(--edge);
+  }
+
+  li button[aria-pressed='true'] {
+    border-color: var(--ink);
+    background: var(--page);
+  }
+
+  .score {
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  strong {
+    display: block;
+    font-weight: 600;
+  }
+
+  .description {
+    display: block;
+    font-size: 0.8125rem;
+    color: var(--ink-soft);
+  }
+
+  .result {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-height: 2.6rem;
+    margin-top: 0.6rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--line);
+  }
+
+  output {
+    font-weight: 600;
+  }
+
+  .copy {
+    flex: none;
+    padding: 0.2rem 0.65rem;
+    font-size: 0.875rem;
+    background: none;
+    border: 1px solid var(--edge);
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+
+  .notes {
+    margin-top: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--ink-soft);
+  }
+</style>

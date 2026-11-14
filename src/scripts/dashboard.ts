@@ -34,16 +34,17 @@ function apply(): void {
   for (const card of cards) {
     const inCategory = category === 'all' || card.dataset.category === category;
     const cardMatches = matches(query, card.dataset.search ?? '');
-    const links = [...card.querySelectorAll<HTMLElement>('[data-link]')];
-    const matchingLinks = links.filter((link) => matches(query, link.dataset.search ?? ''));
+    const items = [...card.querySelectorAll<HTMLElement>('[data-item]')];
+    const matchingItems = items.filter((item) => matches(query, item.dataset.search ?? ''));
 
-    // When the card itself matches, show all of it; otherwise narrow to the matching links.
-    for (const link of links) link.hidden = !cardMatches && !matchingLinks.includes(link);
-    for (const group of card.querySelectorAll<HTMLElement>('[data-link-group]')) {
-      group.hidden = !group.querySelector('[data-link]:not([hidden])');
+    // When the card itself matches, show all of it; otherwise narrow to its matching
+    // items (links, table rows) and hide any group left empty.
+    for (const item of items) item.hidden = !cardMatches && !matchingItems.includes(item);
+    for (const group of card.querySelectorAll<HTMLElement>('[data-item-group]')) {
+      group.hidden = !group.querySelector('[data-item]:not([hidden])');
     }
 
-    const found = cardMatches || matchingLinks.length > 0;
+    const found = cardMatches || matchingItems.length > 0;
     const show = inCategory && found;
     card.hidden = !show;
     if (show) visible += 1;

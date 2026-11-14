@@ -45,6 +45,21 @@ beside it, and import it from a `<script>` in the widget (see
 `src/widgets/Bmi.astro` and `src/lib/bmi.ts`). A failing test blocks the
 deploy.
 
+## Searchable items inside a widget
+
+Give any element `data-item` and a lower-case `data-search` string and the
+search box will filter it individually (links and code-table rows work this
+way). Wrap items in an element with `data-item-group` to hide a heading when
+all of its items are filtered out.
+
+## Edit the clinical codes
+
+Edit `src/data/neuro-codes.yaml`. For another code set, add a YAML file in the
+same shape and a widget like `src/widgets/NeuroCodes.astro`. The build rejects
+a SNOMED id with a wrong check digit and malformed ICD codes, but it cannot
+tell whether a well-formed code is the right one, so check new codes against
+a terminology browser.
+
 ## Edit the links
 
 Edit `src/data/links.yaml`. Each link needs a `label` and an `http(s)` `url`.

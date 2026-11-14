@@ -1,0 +1,30 @@
+---
+import type { WidgetMeta } from '../lib/widgets';
+import CodeTable from '../components/CodeTable.astro';
+import { parseCodes } from '../lib/codes';
+import source from '../data/neuro-codes.yaml?raw';
+
+export const meta: WidgetMeta = {
+  title: 'Neurodegenerative disease codes',
+  category: 'Clinical',
+  keywords: ['snomed', 'snomed ct', 'icd', 'icd-10', 'icd-11', 'coding', 'neurology', 'dementia'],
+  size: 'wide',
+  order: 4,
+};
+
+const groups = parseCodes(source);
+---
+
+<CodeTable groups={groups} />
+<p class="source">
+  SNOMED CT International Edition, ICD-10 WHO 2019, ICD-11 MMS. Select a code to copy it. Check
+  against your own coding system before use.
+</p>
+
+<style>
+  .source {
+    max-width: 70ch;
+    font-size: 0.8125rem;
+    color: var(--ink-soft);
+  }
+</style>
